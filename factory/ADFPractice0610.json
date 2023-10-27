@@ -1,0 +1,12 @@
+{
+	"name": "ADFPractice0610",
+	"properties": {
+		"globalParameters": {
+			"RootPath": {
+				"type": "string",
+				"value": "adfdemo/input"
+			}
+		}
+	},
+	"location": "eastus"
+}
