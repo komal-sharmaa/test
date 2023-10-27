@@ -1,5 +1,5 @@
 {
-	"name": "ds_emp",
+	"name": "ds_inputFolder",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
@@ -10,28 +10,14 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "emp.csv",
 				"folderPath": "input",
 				"container": "adfdemo"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
-			"firstRowAsHeader": true,
+			"firstRowAsHeader": false,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "Mumma",
-				"type": "String"
-			},
-			{
-				"name": "female",
-				"type": "String"
-			},
-			{
-				"name": "123",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
