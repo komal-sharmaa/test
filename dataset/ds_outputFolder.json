@@ -1,31 +1,17 @@
 {
-	"name": "ds_input",
+	"name": "ds_outputFolder",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
-		},
-		"parameters": {
-			"Root": {
-				"type": "string"
-			},
-			"FileName": {
-				"type": "string"
-			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().FileName",
-					"type": "Expression"
-				},
-				"container": {
-					"value": "@dataset().Root",
-					"type": "Expression"
-				}
+				"folderPath": "output",
+				"container": "adfdemo"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

@@ -1,5 +1,5 @@
 {
-	"name": "pl-emp",
+	"name": "pl-dept",
 	"properties": {
 		"activities": [
 			{
@@ -74,7 +74,7 @@
 		"parameters": {
 			"File": {
 				"type": "string",
-				"defaultValue": "Employee-1.csv"
+				"defaultValue": "dept.csv"
 			}
 		},
 		"annotations": []
