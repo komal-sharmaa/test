@@ -21,15 +21,23 @@
 		},
 		"schema": [
 			{
-				"name": "Mumma",
+				"name": "empid",
 				"type": "String"
 			},
 			{
-				"name": "female",
+				"name": "empname",
 				"type": "String"
 			},
 			{
-				"name": "123",
+				"name": "gender",
+				"type": "String"
+			},
+			{
+				"name": "country",
+				"type": "String"
+			},
+			{
+				"name": "salary",
 				"type": "String"
 			}
 		]
