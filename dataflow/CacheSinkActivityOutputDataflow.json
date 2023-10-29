@@ -1,0 +1,51 @@
+{
+	"name": "CacheSinkActivityOutputDataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Employee2",
+						"type": "DatasetReference"
+					},
+					"name": "Emp"
+				}
+			],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          empid as string,",
+				"          name as string,",
+				"          gender as string,",
+				"          country as string,",
+				"          salary as string,",
+				"          dept as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Emp",
+				"Emp aggregate(MaxSal = max(toInteger(salary))) ~> aggregate1",
+				"aggregate1 sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: true,",
+				"     saveOrder: 1,",
+				"     mapColumn(",
+				"          MaxSal",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
