@@ -17,11 +17,28 @@
 						"type": "DatasetReference"
 					},
 					"name": "Employee"
+				},
+				{
+					"dataset": {
+						"referenceName": "Emp",
+						"type": "DatasetReference"
+					},
+					"name": "EmpAgain"
+				},
+				{
+					"dataset": {
+						"referenceName": "Country",
+						"type": "DatasetReference"
+					},
+					"name": "Country"
 				}
 			],
 			"sinks": [
 				{
 					"name": "cachedMaxEmpId"
+				},
+				{
+					"name": "CachedCountries"
 				}
 			],
 			"transformations": [
@@ -61,12 +78,30 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> Employee",
+				"source(output(",
+				"          empid as integer,",
+				"          empname as string,",
+				"          gender as string,",
+				"          country as string,",
+				"          salary as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EmpAgain",
+				"source(output(",
+				"          country_code as string,",
+				"          country_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Country",
 				"Emp aggregate(empid = max(empid)) ~> aggregate1",
 				"Employee keyGenerate(output(empid as long),",
 				"     startAt: 1L,",
 				"     stepValue: 1L) ~> surrogateKey1",
-				"surrogateKey1 derive(empid = empid+cachedMaxEmpId#outputs()[1].maxempid) ~> derivedColumn1",
-				"select1, Emp union(byName: true)~> union1",
+				"surrogateKey1 derive(empid = empid+cachedMaxEmpId#outputs()[1].maxempid,",
+				"          country = CachedCountries#lookup(country).country_name) ~> derivedColumn1",
+				"EmpAgain, select1 union(byName: true)~> union1",
 				"derivedColumn1 select(mapColumn(",
 				"          empid,",
 				"          empname,",
@@ -85,7 +120,19 @@
 				"     saveOrder: 1,",
 				"     mapColumn(",
 				"          maxempid = empid",
-				"     )) ~> cachedMaxEmpId"
+				"     )) ~> cachedMaxEmpId",
+				"Country sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     keys:['country_code'],",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1,",
+				"     mapColumn(",
+				"          country_code,",
+				"          country_name",
+				"     )) ~> CachedCountries"
 			]
 		}
 	}
