@@ -53,7 +53,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"Root": {
-								"value": "@pipeline().parameters.RootPath",
+								"value": "@pipeline().globalParameters.RootPath",
 								"type": "Expression"
 							},
 							"FileName": {
