@@ -10,21 +10,82 @@
 						"type": "DatasetReference"
 					},
 					"name": "Emp"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_employee",
+						"type": "DatasetReference"
+					},
+					"name": "Employee"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"name": "cachedMaxEmpId"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "select1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
-				"          empid as string,",
+				"          empid as integer,",
 				"          empname as string,",
 				"          gender as string,",
 				"          country as string,",
-				"          salary as string",
+				"          salary as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> Emp"
+				"     ignoreNoFilesFound: false) ~> Emp",
+				"source(output(",
+				"          empname as string,",
+				"          gender as string,",
+				"          country as string,",
+				"          salary as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Employee",
+				"Emp aggregate(empid = max(empid)) ~> aggregate1",
+				"Employee keyGenerate(output(empid as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"surrogateKey1 derive(empid = empid+cachedMaxEmpId#outputs()[1].maxempid) ~> derivedColumn1",
+				"select1, Emp union(byName: true)~> union1",
+				"derivedColumn1 select(mapColumn(",
+				"          empid,",
+				"          empname,",
+				"          gender,",
+				"          country,",
+				"          salary",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"aggregate1 sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1,",
+				"     mapColumn(",
+				"          maxempid = empid",
+				"     )) ~> cachedMaxEmpId"
 			]
 		}
 	}
