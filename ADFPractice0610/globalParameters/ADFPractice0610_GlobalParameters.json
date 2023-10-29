@@ -1,1 +1,6 @@
-{}
+{
+	"RootPath": {
+		"type": "string",
+		"value": "adfdemo/input"
+	}
+}
