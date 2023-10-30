@@ -19,7 +19,15 @@
 					"name": "Dept"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_outputFolder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "assert1"
@@ -55,7 +63,25 @@
 				"     expectExists(dept == depid, false, 'assertDep')) ~> assert1",
 				"assert1 derive(isErrorRow = isError(),",
 				"          isErrorDepRow = hasError('assertDep')) ~> derivedColumn1",
-				"derivedColumn1 filter(isErrorRow == false()) ~> filterGoodRows"
+				"derivedColumn1 filter(isErrorRow == false()) ~> filterGoodRows",
+				"filterGoodRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['assert.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          empid,",
+				"          name,",
+				"          gender,",
+				"          country,",
+				"          doj,",
+				"          dept,",
+				"          depid,",
+				"          depname,",
+				"          isErrorRow,",
+				"          isErrorDepRow",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
