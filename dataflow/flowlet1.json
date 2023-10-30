@@ -1,0 +1,49 @@
+{
+	"name": "flowlet1",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "Input"
+				},
+				{
+					"name": "output1"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          id as string,",
+				"          name as string,",
+				"          gender as string",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> Input",
+				"Input aggregate(groupBy(id,",
+				"          name,",
+				"          gender),",
+				"     count = count()) ~> aggregate1",
+				"aggregate1 select(mapColumn(",
+				"          id,",
+				"          name,",
+				"          gender",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 output(mapColumn(",
+				"          id,",
+				"          name,",
+				"          gender",
+				"     )) ~> output1"
+			]
+		}
+	}
+}

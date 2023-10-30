@@ -1,5 +1,5 @@
 {
-	"name": "Dept",
+	"name": "HREmp",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "dept.csv",
+				"fileName": "HREmps.csv",
 				"folderPath": "input",
 				"container": "adfdemo"
 			},
@@ -26,6 +26,10 @@
 			},
 			{
 				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "gender",
 				"type": "String"
 			}
 		]

@@ -1,0 +1,64 @@
+{
+	"name": "RemoveDupDeptDataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Dept",
+						"type": "DatasetReference"
+					},
+					"name": "Dept"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_outputFolder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flowlet1",
+					"flowlet": {
+						"referenceName": "flowlet1",
+						"type": "DataFlowReference"
+					}
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as string,",
+				"          name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Dept",
+				"derivedColumn1 compose(mapColumn(",
+				"          id,",
+				"          name,",
+				"          gender",
+				"     ),",
+				"     composition: 'flowlet1') ~> flowlet1@(output1)",
+				"Dept derive(gender = 'na') ~> derivedColumn1",
+				"flowlet1@output1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RemovedDupDept.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          id,",
+				"          name",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}
