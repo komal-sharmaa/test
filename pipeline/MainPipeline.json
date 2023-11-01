@@ -1,0 +1,21 @@
+{
+	"name": "MainPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute CopyPipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CopyPipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}
