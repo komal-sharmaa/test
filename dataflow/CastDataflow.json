@@ -12,7 +12,22 @@
 					"name": "Emp"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_outputFolder",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_outputFolder",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
 			"transformations": [
 				{
 					"name": "cast1"
@@ -40,7 +55,27 @@
 				"     ),",
 				"     errors: true) ~> cast1",
 				"cast1 split(!isError(),",
-				"     disjoint: false) ~> split1@(goodRows, badRows)"
+				"     disjoint: false) ~> split1@(goodRows, badRows)",
+				"split1@goodRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['goodRows.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          empid,",
+				"          name,",
+				"          gender,",
+				"          country,",
+				"          doj,",
+				"          dept",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sink1",
+				"split1@badRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['badRows.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink2"
 			]
 		}
 	}
